@@ -17,12 +17,15 @@
 HAS_DOCKER="$(type "docker" &> /dev/null && echo true || echo false)"
 HAS_DOCKER_COMPOSE="$(docker compose version | grep "Docker Compose version" &> /dev/null && echo true || echo false)"
 HAS_DOCKER_DASH_COMPOSE="$(type "docker-compose" &> /dev/null && echo true || echo false)"
-if [ "${HAS_DOCKER}" != "true" ]; then
-  echo "Docker is required"
+HAS_PODMAN="$(type "podman" &> /dev/null && echo true || echo false)"
+HAS_PODMAN_COMPOSE="$(podman compose version | grep "version" &> /dev/null && echo true || echo false)"
+HAS_PODMAN_DASH_COMPOSE="$(type "podman-compose" &> /dev/null && echo true || echo false)"
+if [ "${HAS_DOCKER}" != "true" -a "${HAS_PODMAN}" != "true" ]; then
+  echo "At least one of Docker and Podman shall be available."
   exit 1
 fi
-if [ "${HAS_DOCKER_COMPOSE}" != "true" -a "${HAS_DOCKER_DASH_COMPOSE}" != "true" ]; then
-  echo "Docker Compose is required"
+if [ "${HAS_DOCKER_COMPOSE}" != "true" -a "${HAS_DOCKER_DASH_COMPOSE}" != "true" -a "${HAS_PODMAN_COMPOSE}" != "true" -a "${HAS_PODMAN_DASH_COMPOSE}" != "true" ]; then
+  echo "At least one of Docker Compose and Podman Compose shall be available."
   exit 1
 fi
 
@@ -31,8 +34,12 @@ runDockerCompose() {
     docker compose $@
   elif [ "${HAS_DOCKER_DASH_COMPOSE}" == "true" ];  then
     docker-compose $@
+  elif [ "${HAS_PODMAN_COMPOSE}" == "true" ]; then
+    podman compose $@
+  elif [ "${HAS_PODMAN_DASH_COMPOSE}" == "true" ];  then
+    podman-compose $@
   else
-    echo "Docker Compose is required"
+  echo "At least one of Docker Compose and Podman Compose shall be available."
     exit 1
   fi
 }
