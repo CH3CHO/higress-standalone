@@ -10,9 +10,10 @@ ARG GRAFANA_VERSION=9.3.6
 
 FROM ${HUB}/api-server:${APISERVER_VERSION} AS apiserver
 # FROM ${HUB}/higress:${CORE_VERSION} AS controller
-FROM registry.cn-hangzhou.aliyuncs.com/ch3cho/higress-core:sha-fd2b5cf AS controller
+FROM registry.cn-hangzhou.aliyuncs.com/ch3cho/higress-core:sha-7114484 AS controller
 FROM ${HUB}/pilot:${CORE_VERSION} AS pilot
-FROM ${HUB}/gateway:${CORE_VERSION} AS gateway
+# FROM ${HUB}/gateway:${CORE_VERSION} AS gateway
+FROM registry.cn-hangzhou.aliyuncs.com/ch3cho/higress-gateway:sha-7114484 AS gateway
 FROM ${HUB}/console:${CONSOLE_VERSION} AS console
 FROM ${HUB}/prometheus:${PROMETHEUS_VERSION} AS prometheus
 FROM ${HUB}/promtail:${PROMTAIL_VERSION} AS promtail
